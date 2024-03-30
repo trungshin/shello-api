@@ -1,0 +1,11 @@
+{
+  "name": "shello-api",
+  "type": "module",
+  "version": "1.0.0",
+  "main": "src/server.js",
+  "author": "trungshin",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
