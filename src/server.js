@@ -6,9 +6,10 @@ const hostname = 'localhost'
 const port = 8000
 
 app.get('/', function (req, res) {
-    res.send('<h1>Hello World</h1>')
+  res.send('<h1>Hello World</h1>')
 })
 
 app.listen(port, hostname, () => {
-    console.log(`Server started at http://${hostname}:${port}/`)
+  // eslint-disable-next-line no-console
+  console.log(`Server started at http://${hostname}:${port}/`)
 })
