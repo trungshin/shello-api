@@ -1,12 +1,9 @@
-// pw: dqHWCsLkLLloUIp1
-const MONGODB_URI = 'mongodb+srv://trungshin:1n3mzvaNxxJDAMoF@cluster0-trungshin.szfa1.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0-TrungShin'
-const DATABASE_NAME = 'shello'
-
 import { MongoClient, ServerApiVersion } from 'mongodb'
+import { env } from './environment'
 
 let shelloDbInstance = null
 
-const MongoClientInstance = new MongoClient(MONGODB_URI, {
+const MongoClientInstance = new MongoClient(env.MONGODB_URI, {
   serverApi: {
     version: ServerApiVersion.v1,
     strict: true,
@@ -18,7 +15,7 @@ const MongoClientInstance = new MongoClient(MONGODB_URI, {
 export const CONNECT_DB = async () => {
   await MongoClientInstance.connect()
 
-  shelloDbInstance = MongoClientInstance.db(DATABASE_NAME)
+  shelloDbInstance = MongoClientInstance.db(env.DATABASE_NAME)
 }
 
 // Close the connection to the Database

@@ -1,6 +1,6 @@
 {
   "name": "shello-api",
-  "type": "module",
+  "type": "commonjs",
   "version": "1.0.0",
   "main": "src/server.js",
   "author": "trungshin",
@@ -16,6 +16,7 @@
   "dependencies": {
     "@babel/runtime": "^7.22.10",
     "async-exit-hook": "^2.0.1",
+    "dotenv": "^16.4.5",
     "express": "^4.18.2",
     "mongodb": "^6.0.0"
   },
