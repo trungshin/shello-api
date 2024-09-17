@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { StatusCodes } from 'http-status-codes'
+import { env } from '~/config/environment'
 
 // Middleware Centralized error handling
 export const errorHandlingMiddleware = (err, req, res, next) => {
@@ -13,7 +14,8 @@ export const errorHandlingMiddleware = (err, req, res, next) => {
     message: err.message || StatusCodes[err.statusCode], // If there is an error without a message, get the standard Reason Phrases according to the Status Code
     stack: err.stack
   }
-  console.error(responseError)
+  // console.error(responseError)
+  if (env.BUILD_MODE !== 'dev') delete responseError.stack
 
   // Trả responseError về phía Front-end
   res.status(responseError.statusCode).json(responseError)
