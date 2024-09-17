@@ -1,19 +1,20 @@
 /* eslint-disable no-console */
 import express from 'express'
-import { CONNECT_DB, CLOSE_DB, GET_DB } from '~/config/mongodb.js'
+import { CONNECT_DB, CLOSE_DB } from '~/config/mongodb'
 import exitHook from 'async-exit-hook'
-import { env } from '~/config/environment.js'
+import { env } from '~/config/environment'
+import { APIs_V1 } from '~/routes/v1'
 
 const START_SERVER = () => {
   const app = express()
 
-  app.get('/', async (req, res) => {
-    console.log(await GET_DB().listCollections().toArray())
+  app.use('/v1', APIs_V1)
 
+  app.get('/', (req, res) => {
     res.send('<h1>Hello World</h1>')
   })
 
-  app.listen(() => {
+  app.listen(env.PORT, env.HOST, () => {
     console.log(`Server started at http://${env.HOST}:${env.PORT}/`)
   })
 
