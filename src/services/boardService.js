@@ -1,5 +1,6 @@
 /* eslint-disable no-useless-catch */
 import { slugify } from '~/utils/formatters'
+import { boardModel } from '~/models/boardModel'
 
 const createBoard = async (reqBody) => {
   try {
@@ -10,8 +11,14 @@ const createBoard = async (reqBody) => {
     }
 
     // Call the Model layer to process and save the newBoard record into the Database
+    const createBoard = await boardModel.createBoard(newBoard)
+
+    // Get the board after calling
+    const getNewBoard = await boardModel.findOneById(createBoard.insertedId)
+    console.log(getNewBoard)
+
     // Return Results. In Services. there must always be return
-    return newBoard
+    return getNewBoard
   } catch (error) { throw error }
 }
 
