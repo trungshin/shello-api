@@ -1,5 +1,5 @@
 import Joi from 'joi'
-import { ObjectId } from 'mongodb'
+import { ObjectId, ReturnDocument } from 'mongodb'
 import { GET_DB } from '~/config/mongodb'
 import { BOARD_TYPES } from '~/utils/constants'
 import { columnModel } from './columnModel'
@@ -43,7 +43,18 @@ const getDetails = async (id) => {
       { $lookup: { from: columnModel.COLUMN_COLLECTION_NAME, localField: '_id', foreignField: 'boardId', as: 'columns' } },
       { $lookup: { from: cardModel.CARD_COLLECTION_NAME, localField: '_id', foreignField: 'boardId', as: 'cards' } }
     ]).toArray()
-    return result[0] || {}
+    return result[0] || null
+  } catch (error) { throw new Error(error) }
+}
+
+// Push a columnId value to the end of the columnOrderIds array
+const updateColumnOrderIds = async (column) => {
+  try {
+    return await GET_DB().collection(BOARD_COLLECTION_NAME).findOneAndUpdate(
+      { _id: new ObjectId(column.boardId) },
+      { $push: { columnOrderIds: new ObjectId(column._id) } },
+      { ReturnDocument: 'after' }
+    ).value
   } catch (error) { throw new Error(error) }
 }
 
@@ -52,5 +63,6 @@ export const boardModel = {
   BOARD_COLLECTION_SCHEMA,
   createBoard,
   findOneById,
-  getDetails
+  getDetails,
+  updateColumnOrderIds
 }

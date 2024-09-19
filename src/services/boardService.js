@@ -33,7 +33,7 @@ const getDetails = async (boardId) => {
 
     const resBoard = cloneDeep(board)
     // Return card to its correct column
-    resBoard.columns.array.forEach(column => {
+    resBoard.columns.forEach(column => {
       column.cards = resBoard.cards.filter(card => card.columnId.equals(column._id))
     })
 
