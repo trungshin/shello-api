@@ -1,5 +1,5 @@
 import Joi from 'joi'
-import { ObjectId, ReturnDocument } from 'mongodb'
+import { ObjectId } from 'mongodb'
 import { GET_DB } from '~/config/mongodb'
 import { BOARD_TYPES } from '~/utils/constants'
 import { columnModel } from './columnModel'
@@ -17,6 +17,8 @@ const BOARD_COLLECTION_SCHEMA = Joi.object({
   updateAt: Joi.date().timestamp('javascript').default(null),
   _destroy: Joi.boolean().default(false)
 })
+// Specify fields that are not allowed to be updated in the updateBoard function
+const INVALID_UPDATE_FIELDS = ['_id', 'createAt']
 
 const validateBeforeCreate = async (data) => {
   return await BOARD_COLLECTION_SCHEMA.validateAsync(data, { abortEarly: false })
@@ -54,7 +56,23 @@ const updateColumnOrderIds = async (column) => {
       { _id: new ObjectId(column.boardId) },
       { $push: { columnOrderIds: new ObjectId(column._id) } },
       { ReturnDocument: 'after' }
-    ).value
+    )
+  } catch (error) { throw new Error(error) }
+}
+
+const updateBoard = async (boardId, updateData) => {
+  try {
+    // Filter out fields that are not allowed to be updated
+    Object.keys(updateData).forEach(fieldName => {
+      if (INVALID_UPDATE_FIELDS.includes(fieldName)) {
+        delete updateData[fieldName]
+      }
+    })
+    return await GET_DB().collection(BOARD_COLLECTION_NAME).findOneAndUpdate(
+      { _id: new ObjectId(boardId) },
+      { $set: updateData },
+      { ReturnDocument: 'after' }
+    )
   } catch (error) { throw new Error(error) }
 }
 
@@ -64,5 +82,6 @@ export const boardModel = {
   createBoard,
   findOneById,
   getDetails,
-  updateColumnOrderIds
+  updateColumnOrderIds,
+  updateBoard
 }
