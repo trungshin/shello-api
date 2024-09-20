@@ -25,9 +25,15 @@ const START_SERVER = () => {
     res.send('<h1>Hello World</h1>')
   })
 
-  app.listen(env.PORT, env.HOST, () => {
-    console.log(`Server started at http://${env.HOST}:${env.PORT}/`)
-  })
+  if (env.BUILD_MODE === 'prod') {
+    app.listen(process.env.PORT, () => {
+      console.log(`Server started at Port: ${process.env.PORT}`)
+    })
+  } else {
+    app.listen(env.LOCAL_PORT, env.LOCAL_HOST, () => {
+      console.log(`Server started at http://${env.LOCAL_HOST}:${env.LOCAL_PORT}/`)
+    })
+  }
 
   // Perform cleanup tasks before stopping the server
   exitHook(() => {
