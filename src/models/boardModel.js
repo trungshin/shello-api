@@ -77,6 +77,16 @@ const updateBoard = async (boardId, updateData) => {
   } catch (error) { throw new Error(error) }
 }
 
+const deleteColumnOrderIds = async (column) => {
+  try {
+    return await GET_DB().collection(BOARD_COLLECTION_NAME).findOneAndUpdate(
+      { _id: new ObjectId(column.boardId) },
+      { $pull: { columnOrderIds: new ObjectId(column._id) } },
+      { ReturnDocument: 'after' }
+    )
+  } catch (error) { throw new Error(error) }
+}
+
 export const boardModel = {
   BOARD_COLLECTION_NAME,
   BOARD_COLLECTION_SCHEMA,
@@ -84,5 +94,6 @@ export const boardModel = {
   findOneById,
   getDetails,
   updateColumnOrderIds,
-  updateBoard
+  updateBoard,
+  deleteColumnOrderIds
 }
