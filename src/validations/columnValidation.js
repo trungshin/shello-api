@@ -16,6 +16,24 @@ const createColumn = async (req, res, next) => {
   }
 }
 
+const updateColumn = async (req, res, next) => {
+  const correctCondition = Joi.object({
+    // boardId: Joi.string().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE),
+    title: Joi.string().min(3).max(50).trim().strict(),
+    cardOrderIds: Joi.array().items(
+      Joi.string().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE)
+    )
+  })
+
+  try {
+    await correctCondition.validateAsync(req.body, { abortEarly: false, allowUnknown: true })
+    next()
+  } catch (error) {
+    next(new StatusCodes.UNPROCESSABLE_ENTITY, new Error(error).message)
+  }
+}
+
 export const columnValidation = {
-  createColumn
+  createColumn,
+  updateColumn
 }

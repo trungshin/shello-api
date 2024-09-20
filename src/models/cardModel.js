@@ -17,6 +17,9 @@ const CARD_COLLECTION_SCHEMA = Joi.object({
   _destroy: Joi.boolean().default(false)
 })
 
+// Specify fields that are not allowed to be updated in the updateBoard function
+const INVALID_UPDATE_FIELDS = ['_id', 'boardId', 'createAt']
+
 const validateBeforeCreate = async (data) => {
   return await CARD_COLLECTION_SCHEMA.validateAsync(data, { abortEarly: false })
 }
@@ -40,9 +43,31 @@ const findOneById = async (id) => {
   } catch (error) { throw new Error(error) }
 }
 
+const updateCard = async (cardId, updateData) => {
+  try {
+    // Filter out fields that are not allowed to be updated
+    Object.keys(updateData).forEach(fieldName => {
+      if (INVALID_UPDATE_FIELDS.includes(fieldName)) {
+        delete updateData[fieldName]
+      }
+    })
+
+    if (updateData.columnId) {
+      updateData.columnId = new ObjectId(updateData.columnId)
+    }
+
+    return await GET_DB().collection(CARD_COLLECTION_NAME).findOneAndUpdate(
+      { _id: new ObjectId(cardId) },
+      { $set: updateData },
+      { ReturnDocument: 'after' }
+    )
+  } catch (error) { throw new Error(error) }
+}
+
 export const cardModel = {
   CARD_COLLECTION_NAME,
   CARD_COLLECTION_SCHEMA,
   createCard,
-  findOneById
+  findOneById,
+  updateCard
 }

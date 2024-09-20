@@ -17,6 +17,7 @@ const BOARD_COLLECTION_SCHEMA = Joi.object({
   updateAt: Joi.date().timestamp('javascript').default(null),
   _destroy: Joi.boolean().default(false)
 })
+
 // Specify fields that are not allowed to be updated in the updateBoard function
 const INVALID_UPDATE_FIELDS = ['_id', 'createAt']
 
